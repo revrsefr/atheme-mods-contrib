@@ -1,6 +1,13 @@
 /*
  * Copyright (c) 2025 Mike "reverse" Chevronnet <HybridIRC Network>
  * Rights to this code are as documented in doc/LICENSE.
+ *
+ * 
+ * ./configure --enable-contrib LDFLAGS="-L/usr/lib -lcurl -ljansson" LIBS="-lcurl -ljansson"
+ *
+ *  Configuration:
+ *  loadmodule "contrib/bs_youtube";
+ *
  */
 
 #include "atheme-compat.h"
