@@ -149,4 +149,4 @@ static void mod_deinit(const module_unload_intent_t intent)
     hook_del_channel_message(on_channel_message);
 }
 
-VENDOR_DECLARE_MODULE_V1("botserv/bs_youtube", MODULE_UNLOAD_CAPABILITY_OK, CONTRIB_VENDOR_NENOLOD)
+VENDOR_DECLARE_MODULE_V1("botserv/bs_youtube", MODULE_UNLOAD_CAPABILITY_OK)
