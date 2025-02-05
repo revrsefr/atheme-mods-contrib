@@ -30,7 +30,7 @@ notify_django_user_deleted(const char *username)
 
 	/* Set up CURL request */
 	curl_easy_setopt(curl, CURLOPT_URL, DJANGO_API_URL);
-	curl_easy_setopt(curl, CURLOPT_CUSTOMREQUEST, "POST");  // ✅ Django expects POST
+	curl_easy_setopt(curl, CURLOPT_CUSTOMREQUEST, "POST");
 	curl_easy_setopt(curl, CURLOPT_POSTFIELDS, post_data);
 	curl_easy_setopt(curl, CURLOPT_TIMEOUT, 5);
 	curl_easy_setopt(curl, CURLOPT_FOLLOWLOCATION, 1L);
