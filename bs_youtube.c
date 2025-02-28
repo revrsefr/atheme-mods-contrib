@@ -1,6 +1,15 @@
 /*
- * Copyright (c) 2025 Mike "reverse" Chevronnet <Chaat.site Network French>
+ * Copyright (c) 2025 reverse <Chaat.site French Network>
  * Rights to this code are as documented in doc/LICENSE.
+ *
+ * This module allow botserv to fetch youtube link wherever a bot is assigned.
+ *
+ * ./configure --enable-contrib LDFLAGS="-L/usr/lib -lcurl -ljansson" LIBS="-lcurl -ljansson"
+ *
+ *  Configuration:
+ *  loadmodule "contrib/bs_youtube";
+ *  Or load at runtime:
+ *  /msg operserv modload contrib/bs_youtube
  */
 
  #include "atheme-compat.h"
@@ -55,7 +64,7 @@
      curl_easy_setopt(curl, CURLOPT_URL, api_url);
      curl_easy_setopt(curl, CURLOPT_WRITEFUNCTION, write_callback);
      curl_easy_setopt(curl, CURLOPT_WRITEDATA, (void *)&chunk);
-     curl_easy_setopt(curl, CURLOPT_USERAGENT, "Atheme BotServ Youtuble link Module");
+     curl_easy_setopt(curl, CURLOPT_USERAGENT, "Atheme BotServ Youtube link Module");
  
      res = curl_easy_perform(curl);
      if (res != CURLE_OK) {
