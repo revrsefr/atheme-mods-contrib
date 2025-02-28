@@ -1,21 +1,14 @@
 /*
  * Copyright (c) 2025 Mike "reverse" Chevronnet <HybridIRC Network>
  * Rights to this code are as documented in doc/LICENSE.
- *
- * 
- * ./configure --enable-contrib LDFLAGS="-L/usr/lib -lcurl -ljansson" LIBS="-lcurl -ljansson"
- *
- *  Configuration:
- *  loadmodule "contrib/bs_youtube";
- *
  */
 
  #include "atheme-compat.h"
  #include <curl/curl.h>
  #include <jansson.h>
- #include <regex>
+ #include <string.h>
  
- #define YOUTUBE_API_KEY "YOUR_YOUTUBE_API" // Replace with your YouTube API key
+ #define YOUTUBE_API_KEY "AIzaSyCaY3gUxKHk8cr1HCkYsFzw7hcfh9H5v48" // Replace with your YouTube API key
  
  struct memory {
      char *response;
@@ -62,11 +55,11 @@
      curl_easy_setopt(curl, CURLOPT_URL, api_url);
      curl_easy_setopt(curl, CURLOPT_WRITEFUNCTION, write_callback);
      curl_easy_setopt(curl, CURLOPT_WRITEDATA, (void *)&chunk);
-     curl_easy_setopt(curl, CURLOPT_USERAGENT, "Atheme BotServ Module");
+     curl_easy_setopt(curl, CURLOPT_USERAGENT, "Atheme BotServ Youtuble link Module");
  
      res = curl_easy_perform(curl);
      if (res != CURLE_OK) {
-         notice(chansvs.me->nick, user->nick, "Failed to fetch YouTube metadata: %s", curl_easy_strerror(res));
+         notice(chansvs.me->nick, user->nick, "Failed to fetch YouTube metadata, API MISSING?: %s", curl_easy_strerror(res));
      } else {
          // Process JSON response
          json_error_t error;
@@ -86,9 +79,9 @@
                  json_t *view_count = json_object_get(statistics, "viewCount");
  
                  if (title && channel_title && view_count) {
-                     char *formatted_prefix = "\x02\x03""01,00You\x03""00,04Tube\x0F\x02";
+                     char *formatted_prefix = "\x02\x03""01,00You\x03""00,04Tube\x0F\x02 ::";
                      char message[512];
-                     snprintf(message, sizeof(message), "%s \"%s\" by %s with %s views.",
+                     snprintf(message, sizeof(message), "%s %s :: par: %s :: avec: %s vues.",
                               formatted_prefix,
                               json_string_value(title),
                               json_string_value(channel_title),
@@ -113,23 +106,36 @@
      if (data == NULL || data->msg == NULL)
          return;
  
-     std::regex youtube_regex(R"((https?:\/\/(?:www\.)?(?:youtube\.com\/watch\?v=|youtu\.be\/)([A-Za-z0-9_-]{11})))");
-     std::cmatch match;
+     const char *youtube_prefix = "https://www.youtube.com/watch?v=";
+     const char *youtube_short_prefix = "https://youtu.be/";
  
-     if (std::regex_search(data->msg, match, youtube_regex)) {
-         if (match.size() > 2) {
-             std::string video_id = match[2].str();
+     char *video_id = NULL;
  
-             // Clean video_id by removing extra parameters (e.g., "&list=..." or "&t=...")
-             size_t pos = video_id.find_first_of("&?");
-             if (pos != std::string::npos) {
-                 video_id = video_id.substr(0, pos);
-             }
+     // Find the first occurrence of a YouTube link anywhere in the message
+     char *url = strstr(data->msg, youtube_prefix);
+     if (!url)
+         url = strstr(data->msg, youtube_short_prefix);
  
-             mychan_t *mc = mychan_from(data->c);
-             if (mc)
-                 fetch_youtube_metadata(video_id.c_str(), mc, data->u);
+     if (url) {
+         // Extract video ID after the link
+         if (strncmp(url, youtube_prefix, strlen(youtube_prefix)) == 0) {
+             video_id = url + strlen(youtube_prefix);
+         } else if (strncmp(url, youtube_short_prefix, strlen(youtube_short_prefix)) == 0) {
+             video_id = url + strlen(youtube_short_prefix);
          }
+     }
+ 
+     if (video_id) {
+         // Extract the video ID (truncate any extra parameters, if present)
+         char video_id_clean[12] = {0};
+         strncpy(video_id_clean, video_id, sizeof(video_id_clean) - 1);
+         char *ampersand = strchr(video_id_clean, '&');
+         if (ampersand)
+             *ampersand = '\0';
+ 
+         mychan_t *mc = mychan_from(data->c);
+         if (mc)
+             fetch_youtube_metadata(video_id_clean, mc, data->u);
      }
  }
  
@@ -144,5 +150,5 @@
      hook_del_channel_message(on_channel_message);
  }
  
- VENDOR_DECLARE_MODULE_V1("botserv/bs_youtube", MODULE_UNLOAD_CAPABILITY_OK)
+ VENDOR_DECLARE_MODULE_V1("contrib/bs_youtube", MODULE_UNLOAD_CAPABILITY_OK, CONTRIB_VENDOR_REVERSE)
  
