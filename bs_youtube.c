@@ -8,7 +8,7 @@
  #include <jansson.h>
  #include <string.h>
  
- #define YOUTUBE_API_KEY "AIzaSyCaY3gUxKHk8cr1HCkYsFzw7hcfh9H5v48" // Replace with your YouTube API key
+ #define YOUTUBE_API_KEY "YOUR API HERE" // Replace with your YouTube API key
  
  struct memory {
      char *response;
