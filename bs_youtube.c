@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2025 Mike "reverse" Chevronnet <HybridIRC Network>
+ * Copyright (c) 2025 Mike "reverse" Chevronnet <Chaat.site Network French>
  * Rights to this code are as documented in doc/LICENSE.
  */
 
